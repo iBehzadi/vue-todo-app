@@ -1,29 +1,39 @@
 <template>
-  <div class="mt-24">
-    <h1 class="text-center p-2 my-4 bg-red-400">home page </h1>
-  </div>
-  <section class="bg-gray-200">
-    <div class="section-center">
-      <div v-if="projects?.length">
-        <div v-for="project in projects" :key="project.id">{{ project.title }}</div>
-      </div>
+  <div>
+    <div class="mt-24 text-center">
+      <h1 class=" p-2 my-4 bg-red-400">home page </h1>
+      <NuxtLink to="/about">about page</NuxtLink>
     </div>
-  </section>
+    <section class="bg-gray-200">
+      <div class="section-center">
+        <div v-if="projects?.length">
+          <div v-for="project in projects" :key="project.id">
+            <SingleProject @delete="handleDelete" :project="project" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script lang="ts" setup>
-interface IProject {
-  id: number,
-  title: string,
-  details: string,
-  complete: boolean
+
+declare global {
+  interface IProject {
+    id: number,
+    title: string,
+    details: string,
+    complete: boolean
+  }
 }
 
 const projects = ref<IProject[]>();
+const URL:string = 'http://localhost:3002/projects';
 
 onMounted(() => {
+  //get data from server
   (async () => {
-    const result = await httpGet<IProject[]>('http://localhost:3002/projects')
+    const result = await httpGet<IProject[]>(URL)
     projects.value = result
   })()
 
@@ -31,7 +41,9 @@ onMounted(() => {
   //   .then(res => res.json())
   //   .then(data => projects.value = data)
 })
-
+function handleDelete(id:number){
+  projects.value = projects.value?.filter(item => {return item.id !== id})
+}
 async function httpGet<T>(url: string): Promise<T> {
   return fetch(url)
     .then(Response => Response.json());
