@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
   },
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   typescript: { shim: false },
   css: ["~/assets/css/main.css"],
   postcss: {

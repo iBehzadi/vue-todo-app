@@ -11,7 +11,7 @@
         <span @click="deleteProject">
           <Icon name="uil:trash" size="1.5em" />
         </span>
-        <span >
+        <span @click="changeComplete">
           <Icon name="uil:check" size="1.5em" />
         </span>
       </div>
@@ -27,10 +27,19 @@ const props = defineProps<{ project: IProject }>();
 const URL: string = 'http://localhost:3002/projects/' + props.project.id;
 const showDetail = ref<boolean>(false);
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete', 'complete']);
 function deleteProject() {
-  fetch(URL, {method: 'DELETE'})
+  fetch(URL, { method: 'DELETE' })
     .then(() => { emit('delete', props.project.id) })
+    .catch((err) => { console.log(err.message) })
+}
+function changeComplete() {
+  fetch(URL, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ complete: !props.project.complete })
+  })
+    .then(() => { emit('complete', props.project.id) })
     .catch((err) => { console.log(err.message) })
 }
 </script>

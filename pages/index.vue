@@ -2,13 +2,12 @@
   <div>
     <div class="mt-24 text-center">
       <h1 class=" p-2 my-4 bg-red-400">home page </h1>
-      <NuxtLink to="/about">about page</NuxtLink>
     </div>
     <section class="bg-gray-200">
       <div class="section-center">
         <div v-if="projects?.length">
           <div v-for="project in projects" :key="project.id">
-            <SingleProject @delete="handleDelete" :project="project" />
+            <SingleProject @delete="handleDelete" @complete="ccompleteHandle" :project="project" />
           </div>
         </div>
       </div>
@@ -28,7 +27,7 @@ declare global {
 }
 
 const projects = ref<IProject[]>();
-const URL:string = 'http://localhost:3002/projects';
+const URL: string = 'http://localhost:3002/projects';
 
 onMounted(() => {
   //get data from server
@@ -41,8 +40,14 @@ onMounted(() => {
   //   .then(res => res.json())
   //   .then(data => projects.value = data)
 })
-function handleDelete(id:number){
-  projects.value = projects.value?.filter(item => {return item.id !== id})
+function handleDelete(id: number) {
+  projects.value = projects.value?.filter(item => { return item.id !== id })
+}
+function ccompleteHandle(id: number) {
+  let p = projects.value?.find(item => { return item.id === id });
+  if(p?.complete !== undefined) {
+    p.complete = !p.complete
+  }
 }
 async function httpGet<T>(url: string): Promise<T> {
   return fetch(url)

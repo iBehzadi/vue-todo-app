@@ -1,22 +1,16 @@
 {
-    "projects": [
-        {
-            "id" : 1,
-            "title": "Create new page",
-            "details" : "sample details for pr 1",
-            "complete" : false
-        },
-        {
-            "id" : 2,
-            "title": "Create todo app",
-            "details" : "sample details for pr 2",
-            "complete" : true
-        },
-        {
-            "id" : 3,
-            "title": "Create dictionary app 3" ,
-            "details" : "sample details for pr 23",
-            "complete" : false
-        }
-    ]
+  "projects": [
+    {
+      "id": 1,
+      "title": "Create new page",
+      "details": "sample details for pr 1",
+      "complete": true
+    },
+    {
+      "id": 3,
+      "title": "Create dictionary app 3",
+      "details": "sample details for pr 23",
+      "complete": false
+    }
+  ]
 }
