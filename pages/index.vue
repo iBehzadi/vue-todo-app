@@ -1,17 +1,19 @@
 <template>
-  <div>
+  <div class="bg-gray-200 h-screen">
     <div class="mt-24 text-center">
-      <h1 class=" p-2 my-4 bg-red-400">home page </h1>
+      <h1 class=" p-2  bg-red-400">home page </h1>
     </div>
-    <section class="bg-gray-200">
+    <section>
       <div class="section-center ">
-        <div class="max-w-[32rem] mx-auto">
-          <div class="btns flex justify-start">
-            <button @click="addProject">Add Project</button>
+        <div class=" mx-auto">
+          <div class="btns flex items-center">
+            <button @click="addProject" class="bg-white mx-2 p-2 rounded hover:bg-blue-400 transition-all">Add
+              Project</button>
+            <FilterNav @filterChange="current = $event" />
           </div>
-          <div class="border-b-2 border-blue-300"></div>
-          <div v-if="projects?.length">
-            <div v-for="project in projects" :key="project.id">
+          <div class="border-b-2 border-blue-300 my-1"></div>
+          <div v-if="projects?.length" class="lg:flex flex-wrap">
+            <div v-for="project in filteredProjects" :key="project.id" class="basis-1/2" :class="{}">
               <SingleProject @edit="editHandle" @delete="handleDelete" @complete="completeHandle" :project="project" />
             </div>
           </div>
@@ -21,20 +23,12 @@
         </div>
       </div>
     </section>
-    <modifyProjectModal v-if="showModal" :id="editingIdProject" @ok="completeTask" @close="closeModal" />
+    <modifyProjectModal v-if="showModal" :id="editProjectId" @ok="completeTask" @close="closeModal" />
   </div>
 </template>
 
 <script lang="ts" setup>
-function closeModal() {
-  showModal.value = !showModal.value;
-  editingIdProject.value = 0;
-}
-function completeTask() {
-  showModal.value = !showModal.value;
-  editingIdProject.value = 0;
-  getJsonData();
-}
+
 declare global {
   interface IProject {
     id: number,
@@ -45,25 +39,27 @@ declare global {
 }
 const showModal = ref<boolean>(false)
 const projects = ref<IProject[]>();
-const editingIdProject = ref<number>();
+const editProjectId = ref<number>();
 const URL: string = 'http://localhost:3002/projects';
+const current = ref<string>('all');
 
 async function getJsonData() {
-  const result = await httpGet<IProject[]>(URL)
-  projects.value = result
+  const result = await httpGet<IProject[]>(URL);
+  projects.value = result;
 }
 
 onMounted(() => {
-  //get data from server
-  // (async () => {
-  //   const result = await httpGet<IProject[]>(URL)
-  //   projects.value = result
-  // })()
-
   getJsonData();
-  // fetch('http://localhost:3002/projects')
-  //   .then(res => res.json())
-  //   .then(data => projects.value = data)
+
+})
+const filteredProjects = computed(() => {
+  if (current.value === 'completed') {
+    return projects.value?.filter(item => item.complete)
+  } else if (current.value === 'ongoing') {
+    return projects.value?.filter(item => !item.complete)
+  } else {
+    return projects.value
+  }
 })
 function handleDelete(id: number): void {
   projects.value = projects.value?.filter(item => { return item.id !== id })
@@ -75,12 +71,22 @@ function completeHandle(id: number): void {
   }
 }
 function editHandle(id: number) {
-  showModal.value = !showModal.value
-  editingIdProject.value = id
+  showModal.value = !showModal.value;
+  editProjectId.value = id;
+}
+function closeModal() {
+  showModal.value = !showModal.value;
+  editProjectId.value = 0;
+}
+function completeTask() {
+  showModal.value = !showModal.value;
+  editProjectId.value = 0;
+  getJsonData();
 }
 function addProject(): void {
-  showModal.value = true
+  showModal.value = true;
 }
+
 async function httpGet<T>(url: string): Promise<T> {
   return fetch(url)
     .then(Response => Response.json());

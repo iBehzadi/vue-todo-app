@@ -6,12 +6,12 @@
               <div class="company">
                   <img class="brand" src="../assets/img/logo.png" alt="">
               </div>
-              <span @click="toggleMenu" class="nav-menu-icon">///
-                  <i class="bi bi-list"></i>
+              <span @click="toggleMenu" class="nav-menu-icon">
+                  <Icon name="uil:bars" ></Icon>
               </span>
           </div>
 
-          <ul ref="sideMenu" @click="toggleMenu" class="nav-links me-10">
+          <ul ref="sideMenu" @click="toggleMenu" class="nav-links ">
               <li>
                   <router-link :to="{name: 'index'}" class="nav-link scroll-link cursor-pointer" >Home</router-link>
               </li>
@@ -63,7 +63,7 @@ function toggleMenu() {
 }
 
 .show-links {
-    height: 230px;
+    height: auto;
 }
 
 .nav-menu-icon {
@@ -81,7 +81,7 @@ function toggleMenu() {
     display: none;
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
     .nav-menu-icon {
         display: none;
     }
@@ -93,6 +93,7 @@ function toggleMenu() {
     .nav-links {
         height: auto;
         display: flex;
+        margin-right: 2.5rem;
     }
 
     .nav-link {
