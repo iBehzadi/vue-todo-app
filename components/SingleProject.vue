@@ -1,11 +1,11 @@
 <template>
   <div
-    class="project w-[32rem] my-5 mx-auto bg-white py-2 px-5 rounded-md shadow-sm border-l-4 border-solid border-l-[#e90074] "
+    class="project  my-5 mx-auto bg-white py-2 px-5 rounded-md shadow-sm border-l-4 border-solid border-l-[#e90074] "
     :class="{ completed: project.complete }">
     <div class="actions  flex justify-between items-center">
       <h3 class="cursor-pointer" @click="showDetail = !showDetail">{{ project.title }}</h3>
       <div>
-        <span>
+        <span @click="emit('edit', props.project.id)">
           <Icon name="uil:pen" size="1.5em" />
         </span>
         <span @click="deleteProject">
@@ -27,13 +27,13 @@ const props = defineProps<{ project: IProject }>();
 const URL: string = 'http://localhost:3002/projects/' + props.project.id;
 const showDetail = ref<boolean>(false);
 
-const emit = defineEmits(['delete', 'complete']);
-function deleteProject() {
+const emit = defineEmits(['delete', 'complete', 'edit']);
+function deleteProject():void {
   fetch(URL, { method: 'DELETE' })
     .then(() => { emit('delete', props.project.id) })
     .catch((err) => { console.log(err.message) })
 }
-function changeComplete() {
+function changeComplete():void {
   fetch(URL, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
